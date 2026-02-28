@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Teams - SyncItUp</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="nav-logo">⚡ SyncItUp</div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="explore.html">Explore</a></li>
+                <li><a href="teams.html">Teams</a></li>
+                <li><button class="btn btn-small btn-secondary" onclick="logout()">Logout</button></li>
+                <li>
+                    <div class="theme-toggle" id="themeToggle"></div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="padding: 2rem 0;">
+        <h1 class="mb-3">💬 My Teams</h1>
+
+        <div class="grid" style="grid-template-columns: 1fr 2fr; gap: 2rem;">
+            <!-- Teams List -->
+            <div class="card">
+                <h3 class="card-title mb-2">Team Rooms</h3>
+                <div id="teamsListContainer">
+                    <div class="flex-center" style="padding: 2rem;">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="card" style="padding: 0;">
+                <div id="chatArea" class="chat-container">
+                    <div class="flex-center" style="flex: 1; color: var(--text-tertiary);">
+                        Select a team to start chatting
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+
+</html>

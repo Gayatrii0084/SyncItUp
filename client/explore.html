@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore - SyncItUp</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="nav-logo">⚡ SyncItUp</div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="explore.html">Explore</a></li>
+                <li><a href="teams.html">Teams</a></li>
+                <li><button class="btn btn-small btn-secondary" onclick="logout()">Logout</button></li>
+                <li>
+                    <div class="theme-toggle" id="themeToggle"></div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-wide" style="padding: 2rem 0;">
+        <h1 class="mb-3">🔍 Explore Teammates</h1>
+
+        <!-- Filters -->
+        <div class="card mb-3">
+            <div class="grid" style="grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem; align-items: end;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="searchInput">Search by Name</label>
+                    <input type="text" id="searchInput" placeholder="Search...">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="skillFilter">Filter by Skill</label>
+                    <select id="skillFilter">
+                        <option value="">All Skills</option>
+                        <option value="frontend">Frontend</option>
+                        <option value="backend">Backend</option>
+                        <option value="ml">ML/AI</option>
+                        <option value="mobile">Mobile</option>
+                        <option value="devops">DevOps</option>
+                        <option value="blockchain">Blockchain</option>
+                        <option value="iot">IoT</option>
+                        <option value="design">UI/UX</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="experienceFilter">Experience Level</label>
+                    <select id="experienceFilter">
+                        <option value="">All Levels</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+            </div>
+        </div>
+
+        <!-- Users Grid -->
+        <div id="usersContainer" class="grid grid-3">
+            <div class="flex-center" style="grid-column: 1 / -1; padding: 3rem;">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/explore.js"></script>
+</body>
+
+</html>

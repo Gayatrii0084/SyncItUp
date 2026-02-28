@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - SyncItUp</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="nav-logo">⚡ SyncItUp</div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="explore.html">Explore</a></li>
+                <li><a href="teams.html">Teams</a></li>
+                <li><button class="btn btn-small btn-secondary" onclick="logout()">Logout</button></li>
+                <li>
+                    <div class="theme-toggle" id="themeToggle"></div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="padding: 2rem 0;">
+        <h1 class="mb-3">My Profile</h1>
+
+        <div class="grid" style="grid-template-columns: 1fr 2fr; gap: 2rem;">
+            <!-- Profile Summary -->
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <div
+                        style="width: 100px; height: 100px; border-radius: 50%; background: var(--gradient-primary); margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: white;">
+                        👤
+                    </div>
+                    <h3 id="profileName">Loading...</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem;" id="profileCollege"></p>
+                </div>
+                <div style="padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>Branch:</strong> <span
+                            id="profileBranch"></span></p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>Year:</strong> <span
+                            id="profileYear"></span></p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>Email:</strong> <span
+                            id="profileEmail"></span></p>
+                </div>
+            </div>
+
+            <!-- Profile Form -->
+            <div class="card">
+                <h2 class="card-title mb-3">Edit Profile</h2>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bio">Bio</label>
+                        <textarea id="bio" name="bio" placeholder="Tell others about yourself..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experienceLevel">Experience Level</label>
+                        <select id="experienceLevel" name="experienceLevel">
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="preferredRole">Preferred Role</label>
+                        <select id="preferredRole" name="preferredRole">
+                            <option value="Looking for team">Looking for team</option>
+                            <option value="Looking for members">Looking for members</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="availableHours">Available Hours per Week</label>
+                        <input type="number" id="availableHours" name="availableHours" min="0" max="168" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Skills</label>
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <input type="text" id="skillInput" placeholder="Add a skill (e.g., React, Python)">
+                            <button type="button" class="btn btn-primary btn-small" onclick="addSkill()">Add</button>
+                        </div>
+                        <div id="skillsContainer" class="skill-tags"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hackathon Interests</label>
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <input type="text" id="interestInput" placeholder="Add interest (e.g., Web Development)">
+                            <button type="button" class="btn btn-primary btn-small" onclick="addInterest()">Add</button>
+                        </div>
+                        <div id="interestsContainer" class="skill-tags"></div>
+                    </div>
+
+                    <div id="successMessage" class="hidden"
+                        style="padding: 0.75rem; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 0.5rem; margin-bottom: 1rem; font-size: 0.875rem;">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+
+</html>

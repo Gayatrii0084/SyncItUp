@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SyncItUp</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="nav-logo">⚡ SyncItUp</div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="explore.html">Explore</a></li>
+                <li><a href="teams.html">Teams</a></li>
+                <li><button class="btn btn-small btn-secondary" onclick="logout()">Logout</button></li>
+                <li>
+                    <div class="theme-toggle" id="themeToggle"></div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container" style="padding: 2rem 0;">
+        <div style="margin-bottom: 2rem;">
+            <h1 id="welcomeText">Welcome back! 👋</h1>
+            <p style="color: var(--text-secondary);">Here's what's happening with your collaborations</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-3 mb-4">
+            <a href="explore.html" class="card text-center" style="text-decoration: none; cursor: pointer;">
+                <div style="font-size: 3rem; margin-bottom: 0.5rem;">🔍</div>
+                <h3 class="card-title">Explore Users</h3>
+                <p>Find and connect with potential teammates</p>
+            </a>
+            <a href="profile.html" class="card text-center" style="text-decoration: none; cursor: pointer;">
+                <div style="font-size: 3rem; margin-bottom: 0.5rem;">👤</div>
+                <h3 class="card-title">Edit Profile</h3>
+                <p>Update your skills and preferences</p>
+            </a>
+            <a href="teams.html" class="card text-center" style="text-decoration: none; cursor: pointer;">
+                <div style="font-size: 3rem; margin-bottom: 0.5rem;">💬</div>
+                <h3 class="card-title">My Teams</h3>
+                <p>Collaborate with your teammates</p>
+            </a>
+        </div>
+
+        <!-- Recommended Matches -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">🎯 Top Matches For You</h2>
+                <a href="explore.html"
+                    style="color: var(--primary-color); text-decoration: none; font-weight: 600;">View All →</a>
+            </div>
+            <div id="recommendationsContainer" class="grid grid-3">
+                <div class="flex-center" style="grid-column: 1 / -1; padding: 3rem;">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Received Requests -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h2 class="card-title">📬 Collaboration Requests</h2>
+            </div>
+            <div id="requestsContainer">
+                <div class="flex-center" style="padding: 2rem;">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/matching.js"></script>
+    <script>
+        // Load user info
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            document.getElementById('welcomeText').textContent = `Welcome back, ${user.name.split(' ')[0]}! 👋`;
+        }
+
+        // Load recommendations
+        loadRecommendations(3);
+
+        // Load received requests
+        async function loadRequests() {
+            try {
+                const response = await fetch(`${API_URL}/team/requests/received`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+
+                const container = document.getElementById('requestsContainer');
+
+                if (data.requests.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: 2rem;">No pending requests</p>';
+                    return;
+                }
+
+                container.innerHTML = data.requests.map(req => `
+          <div class="card mb-2">
+            <div class="flex-between">
+              <div>
+                <h4>${req.sender.name}</h4>
+                <p style="font-size: 0.875rem; color: var(--text-secondary);">${req.sender.college} - ${req.sender.branch}</p>
+                <div class="skill-tags mt-1">
+                  ${req.sender.skills.map(s => `<span class="skill-tag ${getSkillCategory(s)}">${s}</span>`).join('')}
+                </div>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-primary btn-small" onclick="handleRequest('${req._id}', 'accepted')">Accept</button>
+                <button class="btn btn-secondary btn-small" onclick="handleRequest('${req._id}', 'rejected')">Reject</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+            } catch (error) {
+                console.error('Load requests error:', error);
+            }
+        }
+
+        async function handleRequest(requestId, status) {
+            try {
+                const response = await fetch(`${API_URL}/team/request/${requestId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ status })
+                });
+
+                if (response.ok) {
+                    loadRequests();
+                    if (status === 'accepted') {
+                        alert('Request accepted! Team created.');
+                    }
+                }
+            } catch (error) {
+                console.error('Handle request error:', error);
+            }
+        }
+
+        loadRequests();
+    </script>
+</body>
+
+</html>
