@@ -24,6 +24,11 @@ const reportSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    // Alias to make it clearer in APIs that this is the creation time
+    createdAt: {
+    type: Date,
+    default: Date.now
+    },
     lastMessages: [
         {
             senderName: String,

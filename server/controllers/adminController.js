@@ -6,13 +6,32 @@ const mongoose = require('mongoose');
 // GET /api/admin/users — all users from same college
 exports.getUsers = async (req, res) => {
     try {
-        const users = await User.find({ college: req.userCollege })
+        const users = await User.find({
+            college: req.userCollege
+        })
             .select('-password')
             .sort({ createdAt: -1 });
 
         res.json({ users });
     } catch (error) {
         console.error('Admin getUsers error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// GET /api/admin/students — only student-role users from same college
+exports.getStudents = async (req, res) => {
+    try {
+        const students = await User.find({
+            college: req.userCollege,
+            role: { $in: ['user', 'student'] }
+        })
+            .select('-password')
+            .sort({ createdAt: -1 });
+
+        res.json({ students });
+    } catch (error) {
+        console.error('Admin getStudents error:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
@@ -88,6 +107,35 @@ exports.unblockUser = async (req, res) => {
         res.json({ message: `${target.name} has been unblocked.`, user: { id: target._id, name: target.name, isBlocked: false } });
     } catch (error) {
         console.error('Admin unblockUser error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// PATCH /api/admin/block/:id — toggle block status for a student
+exports.toggleBlockStudent = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const target = await User.findById(id);
+        if (!target) return res.status(404).json({ message: 'User not found' });
+
+        // Only manage students from same college
+        if (target.role === 'admin') {
+            return res.status(403).json({ message: 'Cannot block or unblock an admin' });
+        }
+        if (target.college !== req.userCollege) {
+            return res.status(403).json({ message: 'User not in your college' });
+        }
+
+        target.isBlocked = !target.isBlocked;
+        await target.save();
+
+        res.json({
+            message: target.isBlocked ? `${target.name} has been blocked.` : `${target.name} has been unblocked.`,
+            user: { id: target._id, name: target.name, isBlocked: target.isBlocked }
+        });
+    } catch (error) {
+        console.error('Admin toggleBlockStudent error:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };

@@ -2,8 +2,18 @@ const Request = require('../models/Request');
 const Team = require('../models/Team');
 const User = require('../models/User');
 
+// Helper to enforce that admins cannot use team collaboration features
+function ensureStudentRole(req, res) {
+    if (req.userRole === 'admin') {
+        res.status(403).json({ message: 'Admin accounts cannot use team collaboration features.' });
+        return false;
+    }
+    return true;
+}
+
 // Send collaboration request
 exports.sendRequest = async (req, res) => {
+    if (!ensureStudentRole(req, res)) return;
     try {
         const { receiverId, message } = req.body;
 
@@ -36,6 +46,7 @@ exports.sendRequest = async (req, res) => {
 
 // Get received requests
 exports.getReceivedRequests = async (req, res) => {
+    if (!ensureStudentRole(req, res)) return;
     try {
         const requests = await Request.find({
             receiver: req.userId,
@@ -51,6 +62,7 @@ exports.getReceivedRequests = async (req, res) => {
 
 // Get sent requests
 exports.getSentRequests = async (req, res) => {
+    if (!ensureStudentRole(req, res)) return;
     try {
         const requests = await Request.find({
             sender: req.userId
@@ -65,6 +77,7 @@ exports.getSentRequests = async (req, res) => {
 
 // Accept/Reject request
 exports.updateRequest = async (req, res) => {
+    if (!ensureStudentRole(req, res)) return;
     try {
         const { requestId } = req.params;
         const { status } = req.body; // 'accepted' or 'rejected'
@@ -116,6 +129,7 @@ exports.updateRequest = async (req, res) => {
 
 // Get user's teams
 exports.getMyTeams = async (req, res) => {
+    if (!ensureStudentRole(req, res)) return;
     try {
         const teams = await Team.find({
             members: req.userId
@@ -130,6 +144,7 @@ exports.getMyTeams = async (req, res) => {
 
 // Get team details
 exports.getTeamDetails = async (req, res) => {
+    if (!ensureStudentRole(req, res)) return;
     try {
         const { teamId } = req.params;
 

@@ -62,9 +62,9 @@ const userSchema = new mongoose.Schema({
         default: Date.now
     },
     role: {
-        type: String,
-        enum: ['user', 'admin'],
-        default: 'user'
+    type: String,
+    enum: ['user', 'student', 'admin'],
+    default: 'student'
     },
     isBlocked: {
         type: Boolean,

@@ -26,7 +26,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Load dashboard sections
+    const isAdmin = user && user.role === 'admin';
+
+    // If admin, hide matching/collaboration UI and point to admin dashboard instead
+    if (isAdmin) {
+        const recContainer = document.getElementById('recommendationsContainer');
+        if (recContainer) {
+            recContainer.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: 2rem; grid-column: 1 / -1;">Admin accounts do not participate in matching. Use the Admin Dashboard to manage students and reports.</p>';
+        }
+
+        const reqContainer = document.getElementById('requestsContainer');
+        if (reqContainer) {
+            reqContainer.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: 2rem;">Collaboration requests are disabled for admin accounts.</p>';
+        }
+
+        return;
+    }
+
+    // Load dashboard sections for students
     try {
         if (typeof loadRecommendations === 'function') {
             loadRecommendations(3);

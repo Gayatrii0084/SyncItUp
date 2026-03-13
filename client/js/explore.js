@@ -1,6 +1,8 @@
 // Explore users JavaScript
 
 let allUsers = [];
+const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+const isAdminUser = currentUser && currentUser.role === 'admin';
 
 // Get skill category helper
 function getSkillCategory(skill) {
@@ -19,6 +21,14 @@ function getSkillCategory(skill) {
 
 // Load all users with recommendations
 async function loadUsers() {
+    // Admin accounts should not use the explore/matching system
+    if (isAdminUser) {
+        const container = document.getElementById('usersContainer');
+        if (container) {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: 3rem; grid-column: 1 / -1;">Admin accounts cannot explore teammates. Use the Admin Dashboard instead.</p>';
+        }
+        return;
+    }
     try {
         const response = await fetch(`${API_URL}/matching/recommendations`, {
             headers: getAuthHeaders()

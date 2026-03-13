@@ -8,8 +8,16 @@ exports.getRecommendations = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Get all other users
-        const allUsers = await User.find({ _id: { $ne: req.userId } }).select('-password');
+        // Admin accounts are not allowed to participate in matching
+        if (currentUser.role === 'admin') {
+            return res.status(403).json({ message: 'Admin accounts cannot use the matching system.' });
+        }
+
+        // Get all other non-admin users (students) as potential matches
+        const allUsers = await User.find({
+            _id: { $ne: req.userId },
+            role: { $in: ['user', 'student'] }
+        }).select('-password');
 
         // Calculate match scores
         const matches = allUsers.map(user => {

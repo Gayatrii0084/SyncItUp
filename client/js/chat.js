@@ -193,6 +193,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    // Admin accounts should not access team chat; redirect them to admin dashboard
+    if (currentUser.role === 'admin') {
+        window.location.href = '/admin/dashboard';
+        return;
+    }
+
     initSocket();
     loadTeams();
 });
