@@ -9,6 +9,12 @@ async function loadProfile() {
         const response = await fetch(`${API_URL}/profile/me`, {
             headers: getAuthHeaders()
         });
+
+        if (!response.ok) {
+            console.error('Failed to load profile:', response.status);
+            return;
+        }
+
         const data = await response.json();
         const user = data.user;
 
@@ -131,6 +137,12 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
             successMsg.textContent = 'Profile updated successfully!';
             successMsg.classList.remove('hidden');
             loadProfile();
+        } else {
+            const data = await response.json().catch(() => ({}));
+            successMsg.textContent = data.message || 'Failed to save profile.';
+            successMsg.style.color = '#ef4444';
+            successMsg.style.background = 'rgba(239,68,68,0.1)';
+            successMsg.classList.remove('hidden');
         }
 
         saveBtn.textContent = 'Save Changes';
@@ -140,6 +152,56 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
         saveBtn.textContent = 'Save Changes';
         saveBtn.disabled = false;
     }
+});
+
+// ─── Report a User ───────────────────────────────────────────────
+document.getElementById('reportForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const reportedEmail = document.getElementById('reportedEmail').value.trim();
+    const reason = document.getElementById('reportReason').value;
+    const successMsg = document.getElementById('reportSuccessMsg');
+    const errorMsg = document.getElementById('reportErrorMsg');
+    const reportBtn = document.getElementById('reportBtn');
+
+    successMsg.classList.add('hidden');
+    errorMsg.classList.add('hidden');
+
+    if (!reportedEmail || !reason) {
+        errorMsg.textContent = 'Please fill in all fields.';
+        errorMsg.classList.remove('hidden');
+        return;
+    }
+
+    reportBtn.textContent = 'Submitting...';
+    reportBtn.disabled = true;
+
+    try {
+        const response = await fetch(`${API_URL}/report`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ reportedUserEmail: reportedEmail, reason })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            successMsg.textContent = data.message || 'Report submitted successfully!';
+            successMsg.classList.remove('hidden');
+            document.getElementById('reportedEmail').value = '';
+            document.getElementById('reportReason').value = '';
+        } else {
+            errorMsg.textContent = data.message || 'Failed to submit report.';
+            errorMsg.classList.remove('hidden');
+        }
+    } catch (error) {
+        console.error('Report error:', error);
+        errorMsg.textContent = 'Server error. Please try again.';
+        errorMsg.classList.remove('hidden');
+    }
+
+    reportBtn.textContent = 'Submit Report';
+    reportBtn.disabled = false;
 });
 
 // Helper function from matching.js

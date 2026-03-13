@@ -25,8 +25,8 @@ async function loadUsers() {
         });
         const data = await response.json();
 
-        allUsers = data.recommendations.map(rec => ({
-            ...rec.user,
+        allUsers = (data.recommendations || []).map(rec => ({
+            ...(rec.user || {}),
             score: rec.score
         }));
 
@@ -40,12 +40,14 @@ async function loadUsers() {
 function displayUsers(users) {
     const container = document.getElementById('usersContainer');
 
-    if (users.length === 0) {
+    if (!Array.isArray(users) || users.length === 0) {
         container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: 3rem; grid-column: 1 / -1;">No users found</p>';
         return;
     }
 
-    container.innerHTML = users.map(user => `
+    container.innerHTML = users.map(user => {
+    const skills = Array.isArray(user.skills) ? user.skills : [];
+    return `
     <div class="card">
       <div class="flex-between mb-2">
         <h3 class="card-title">${user.name}</h3>
@@ -63,10 +65,10 @@ function displayUsers(users) {
       <div class="mb-2">
         <strong style="font-size: 0.875rem;">Skills:</strong>
         <div class="skill-tags">
-          ${user.skills.slice(0, 4).map(skill =>
+          ${skills.slice(0, 4).map(skill =>
         `<span class="skill-tag ${getSkillCategory(skill)}">${skill}</span>`
     ).join('')}
-          ${user.skills.length > 4 ? `<span class="skill-tag default">+${user.skills.length - 4}</span>` : ''}
+          ${skills.length > 4 ? `<span class="skill-tag default">+${skills.length - 4}</span>` : ''}
         </div>
       </div>
       

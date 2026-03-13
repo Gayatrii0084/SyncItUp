@@ -10,7 +10,7 @@ module.exports = (io) => {
             try {
                 // Verify user is member of team
                 const team = await Team.findById(teamId);
-                if (team && team.members.includes(userId)) {
+                if (team && team.members.some(memberId => memberId.toString() === String(userId))) {
                     socket.join(teamId);
                     console.log(`User ${userId} joined team ${teamId}`);
 

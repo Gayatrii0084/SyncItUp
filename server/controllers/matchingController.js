@@ -34,6 +34,16 @@ exports.getRecommendations = async (req, res) => {
 
 // Calculate match score between two users
 function calculateMatchScore(user1, user2) {
+    // Ensure safe defaults so matching works even when users have incomplete profiles
+    const u1Skills = Array.isArray(user1.skills) ? user1.skills : [];
+    const u2Skills = Array.isArray(user2.skills) ? user2.skills : [];
+    const u1Interests = Array.isArray(user1.hackathonInterests) ? user1.hackathonInterests : [];
+    const u2Interests = Array.isArray(user2.hackathonInterests) ? user2.hackathonInterests : [];
+    const u1Hours = typeof user1.availableHours === 'number' ? user1.availableHours : 0;
+    const u2Hours = typeof user2.availableHours === 'number' ? user2.availableHours : 0;
+    const u1Exp = user1.experienceLevel || 'Beginner';
+    const u2Exp = user2.experienceLevel || 'Beginner';
+
     let skillScore = 0;
     let interestScore = 0;
     let availabilityScore = 0;
@@ -41,24 +51,24 @@ function calculateMatchScore(user1, user2) {
 
     // 40% - Skill Complementarity
     // Frontend should match with Backend/ML, not another Frontend
-    const skillComplementarity = calculateSkillComplementarity(user1.skills, user2.skills);
+    const skillComplementarity = calculateSkillComplementarity(u1Skills, u2Skills);
     skillScore = skillComplementarity * 0.4;
 
     // 25% - Common Interests
-    const commonInterests = user1.hackathonInterests.filter(interest =>
-        user2.hackathonInterests.includes(interest)
+    const commonInterests = u1Interests.filter(interest =>
+        u2Interests.includes(interest)
     ).length;
-    const maxInterests = Math.max(user1.hackathonInterests.length, user2.hackathonInterests.length, 1);
+    const maxInterests = Math.max(u1Interests.length, u2Interests.length, 1);
     interestScore = (commonInterests / maxInterests) * 0.25;
 
     // 20% - Availability Overlap
-    const availDiff = Math.abs(user1.availableHours - user2.availableHours);
-    const maxAvail = Math.max(user1.availableHours, user2.availableHours, 1);
+    const availDiff = Math.abs(u1Hours - u2Hours);
+    const maxAvail = Math.max(u1Hours, u2Hours, 1);
     availabilityScore = (1 - (availDiff / maxAvail)) * 0.2;
 
     // 15% - Experience Compatibility
     const expLevels = { 'Beginner': 1, 'Intermediate': 2, 'Advanced': 3 };
-    const expDiff = Math.abs(expLevels[user1.experienceLevel] - expLevels[user2.experienceLevel]);
+    const expDiff = Math.abs(expLevels[u1Exp] - expLevels[u2Exp]);
     experienceScore = (1 - (expDiff / 2)) * 0.15;
 
     const total = skillScore + interestScore + availabilityScore + experienceScore;
@@ -76,7 +86,10 @@ function calculateMatchScore(user1, user2) {
 
 // Calculate skill complementarity
 function calculateSkillComplementarity(skills1, skills2) {
-    if (skills1.length === 0 || skills2.length === 0) return 0;
+    const safeSkills1 = Array.isArray(skills1) ? skills1 : [];
+    const safeSkills2 = Array.isArray(skills2) ? skills2 : [];
+
+    if (safeSkills1.length === 0 || safeSkills2.length === 0) return 0;
 
     // Define skill categories
     const skillCategories = {
@@ -93,7 +106,7 @@ function calculateSkillComplementarity(skills1, skills2) {
     const user1Categories = new Set();
     const user2Categories = new Set();
 
-    skills1.forEach(skill => {
+    safeSkills1.forEach(skill => {
         const skillLower = skill.toLowerCase();
         for (const [category, keywords] of Object.entries(skillCategories)) {
             if (keywords.some(keyword => skillLower.includes(keyword))) {
@@ -102,7 +115,7 @@ function calculateSkillComplementarity(skills1, skills2) {
         }
     });
 
-    skills2.forEach(skill => {
+    safeSkills2.forEach(skill => {
         const skillLower = skill.toLowerCase();
         for (const [category, keywords] of Object.entries(skillCategories)) {
             if (keywords.some(keyword => skillLower.includes(keyword))) {

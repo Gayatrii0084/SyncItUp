@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SyncItUp</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ── Admin Specific Styles ── */
+        .admin-header {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            padding: 0;
+        }
+
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #1c1c1c;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            vertical-align: middle;
+            margin-left: 0.4rem;
+        }
+
+        .tab-bar {
+            display: flex;
+            gap: 0.25rem;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-table tr:hover td {
+            background: rgba(99, 102, 241, 0.03);
+        }
+
+        .blocked-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+        }
+
+        .active-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+        }
+
+        .admin-table .btn {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.75rem;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: #1c1c1c;
+            border: none;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .report-card {
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            background: var(--card-bg);
+        }
+
+        .report-messages {
+            margin-top: 0.75rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .dark-mode .report-messages {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .msg-bubble {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.4rem;
+            align-items: flex-start;
+        }
+
+        .msg-sender {
+            font-weight: 600;
+            color: var(--primary-color);
+            min-width: 80px;
+            flex-shrink: 0;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .search-bar {
+            margin-bottom: 1rem;
+        }
+
+        .search-bar input {
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-tertiary);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .loading-state {
+            display: flex;
+            justify-content: center;
+            padding: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Admin Navigation -->
+    <nav class="navbar admin-header">
+        <div class="container nav-content">
+            <div class="nav-logo">
+                ⚡ SyncItUp
+                <span class="admin-badge">🛡 Admin</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/dashboard.html">← Back to App</a></li>
+                <li id="adminCollegeDisplay" style="color: var(--text-secondary); font-size: 0.875rem;"></li>
+                <li><button class="btn btn-small btn-secondary" onclick="adminLogout()">Logout</button></li>
+                <li><div class="theme-toggle" id="themeToggle"></div></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="padding: 2rem 0;">
+        <!-- Stats Overview -->
+        <div style="margin-bottom: 2rem;">
+            <h1>Admin Dashboard</h1>
+            <p style="color: var(--text-secondary);">Manage users, teams, and reports for your college.</p>
+        </div>
+
+        <div class="stat-grid" id="statsGrid">
+            <div class="stat-card"><div class="stat-number" id="statUsers">—</div><div class="stat-label">Total Users</div></div>
+            <div class="stat-card"><div class="stat-number" id="statTeams">—</div><div class="stat-label">Teams</div></div>
+            <div class="stat-card"><div class="stat-number" id="statReports">—</div><div class="stat-label">Reports</div></div>
+            <div class="stat-card"><div class="stat-number" id="statBlocked">—</div><div class="stat-label">Blocked Users</div></div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="card">
+            <div class="tab-bar">
+                <button class="tab-btn active" onclick="switchTab('users', this)">👥 Users</button>
+                <button class="tab-btn" onclick="switchTab('teams', this)">🤝 Teams</button>
+                <button class="tab-btn" onclick="switchTab('reports', this)">📋 Reports</button>
+                <button class="tab-btn" onclick="switchTab('blocked', this)">🚫 Blocked Users</button>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="tab-users" class="tab-panel active">
+                <div class="search-bar">
+                    <input type="text" id="userSearch" placeholder="🔍 Search users by name or email..." oninput="filterUsers()">
+                </div>
+                <div id="usersContent">
+                    <div class="loading-state"><div class="spinner"></div></div>
+                </div>
+            </div>
+
+            <!-- Teams Tab -->
+            <div id="tab-teams" class="tab-panel">
+                <div id="teamsContent">
+                    <div class="loading-state"><div class="spinner"></div></div>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="tab-reports" class="tab-panel">
+                <div id="reportsContent">
+                    <div class="loading-state"><div class="spinner"></div></div>
+                </div>
+            </div>
+
+            <!-- Blocked Users Tab -->
+            <div id="tab-blocked" class="tab-panel">
+                <div id="blockedContent">
+                    <div class="loading-state"><div class="spinner"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" style="position: fixed; bottom: 2rem; right: 2rem; background: #1e1b4b; color: white; padding: 0.85rem 1.5rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 500; display: none; z-index: 9999; box-shadow: 0 8px 30px rgba(0,0,0,0.3); max-width: 320px;"></div>
+
+    <script src="../js/theme.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

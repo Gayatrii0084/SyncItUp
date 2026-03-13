@@ -10,20 +10,20 @@
   --primary-hover: #4f46e5;
   --secondary-color: #8b5cf6;
   --accent-color: #ec4899;
-  
+
   --bg-primary: #ffffff;
   --bg-secondary: #f3f4f6;
   --bg-tertiary: #e5e7eb;
-  
+
   --text-primary: #111827;
   --text-secondary: #6b7280;
   --text-tertiary: #9ca3af;
-  
+
   --border-color: #e5e7eb;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
+
   /* Skill Tag Colors */
   --frontend-color: #3b82f6;
   --backend-color: #10b981;
@@ -34,7 +34,7 @@
   --iot-color: #14b8a6;
   --design-color: #f97316;
   --data-color: #6366f1;
-  
+
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   --gradient-secondary: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
@@ -44,11 +44,11 @@
   --bg-primary: #111827;
   --bg-secondary: #1f2937;
   --bg-tertiary: #374151;
-  
+
   --text-primary: #f9fafb;
   --text-secondary: #d1d5db;
   --text-tertiary: #9ca3af;
-  
+
   --border-color: #374151;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
@@ -89,18 +89,40 @@ body {
    TYPOGRAPHY
    ============================================ */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 700;
   line-height: 1.2;
   color: var(--text-primary);
 }
 
-h1 { font-size: 3rem; }
-h2 { font-size: 2.25rem; }
-h3 { font-size: 1.875rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.25rem; }
-h6 { font-size: 1rem; }
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2.25rem;
+}
+
+h3 {
+  font-size: 1.875rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+h5 {
+  font-size: 1.25rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
 
 p {
   color: var(--text-secondary);
@@ -221,7 +243,9 @@ label {
   font-size: 0.875rem;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 2px solid var(--border-color);
@@ -233,7 +257,9 @@ input, select, textarea {
   font-family: inherit;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
@@ -291,16 +317,45 @@ textarea {
 }
 
 /* Skill tag colors */
-.skill-tag.frontend { background: var(--frontend-color); }
-.skill-tag.backend { background: var(--backend-color); }
-.skill-tag.ml { background: var(--ml-color); }
-.skill-tag.mobile { background: var(--mobile-color); }
-.skill-tag.devops { background: var(--devops-color); }
-.skill-tag.blockchain { background: var(--blockchain-color); }
-.skill-tag.iot { background: var(--iot-color); }
-.skill-tag.design { background: var(--design-color); }
-.skill-tag.data { background: var(--data-color); }
-.skill-tag.default { background: var(--text-tertiary); }
+.skill-tag.frontend {
+  background: var(--frontend-color);
+}
+
+.skill-tag.backend {
+  background: var(--backend-color);
+}
+
+.skill-tag.ml {
+  background: var(--ml-color);
+}
+
+.skill-tag.mobile {
+  background: var(--mobile-color);
+}
+
+.skill-tag.devops {
+  background: var(--devops-color);
+}
+
+.skill-tag.blockchain {
+  background: var(--blockchain-color);
+}
+
+.skill-tag.iot {
+  background: var(--iot-color);
+}
+
+.skill-tag.design {
+  background: var(--design-color);
+}
+
+.skill-tag.data {
+  background: var(--data-color);
+}
+
+.skill-tag.default {
+  background: var(--text-tertiary);
+}
 
 /* ============================================
    COMPATIBILITY SCORE
@@ -442,36 +497,96 @@ textarea {
    UTILITIES
    ============================================ */
 
-.text-center { text-align: center; }
-.text-right { text-align: right; }
+.text-center {
+  text-align: center;
+}
 
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mt-4 { margin-top: 2rem; }
+.text-right {
+  text-align: right;
+}
 
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.mb-4 { margin-bottom: 2rem; }
+.mt-1 {
+  margin-top: 0.5rem;
+}
 
-.flex { display: flex; }
-.flex-center { display: flex; justify-content: center; align-items: center; }
-.flex-between { display: flex; justify-content: space-between; align-items: center; }
-.flex-wrap { flex-wrap: wrap; }
-.gap-1 { gap: 0.5rem; }
-.gap-2 { gap: 1rem; }
-.gap-3 { gap: 1.5rem; }
+.mt-2 {
+  margin-top: 1rem;
+}
 
-.hidden { display: none; }
+.mt-3 {
+  margin-top: 1.5rem;
+}
+
+.mt-4 {
+  margin-top: 2rem;
+}
+
+.mb-1 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-2 {
+  margin-bottom: 1rem;
+}
+
+.mb-3 {
+  margin-bottom: 1.5rem;
+}
+
+.mb-4 {
+  margin-bottom: 2rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.gap-1 {
+  gap: 0.5rem;
+}
+
+.gap-2 {
+  gap: 1rem;
+}
+
+.gap-3 {
+  gap: 1.5rem;
+}
+
+.hidden {
+  display: none;
+}
 
 /* ============================================
    ANIMATIONS
    ============================================ */
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .fade-in {
@@ -479,13 +594,25 @@ textarea {
 }
 
 @keyframes slideIn {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .pulse {
@@ -586,18 +713,28 @@ textarea {
    ============================================ */
 
 @media (max-width: 768px) {
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.75rem; }
-  h3 { font-size: 1.5rem; }
-  
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
   .nav-links {
     gap: 1rem;
   }
-  
-  .grid-2, .grid-3, .grid-4 {
+
+  .grid-2,
+  .grid-3,
+  .grid-4 {
     grid-template-columns: 1fr;
   }
-  
+
   .message {
     max-width: 85%;
   }
@@ -617,7 +754,9 @@ textarea {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-overlay {
@@ -632,3 +771,122 @@ textarea {
   justify-content: center;
   z-index: 1000;
 }
+
+/* --- Added for Password Validation & Error Messages --- */
+
+/* The box that explains the password rules */
+.password-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-tertiary);
+  border-radius: 0.375rem;
+  border-left: 4px solid var(--primary-color);
+  margin-top: 0.5rem;
+}
+
+/* The box that turns red when the password is wrong */
+/* Improved Error Box that won't disturb the UI */
+.error-box {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ef4444;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  width: 100%;
+  /* Ensures it stays within the form width */
+  box-sizing: border-box;
+  /* Prevents padding from adding to width */
+}
+
+/* Ensure hidden truly removes it from the layout */
+.hidden {
+  display: none !important;
+}
+
+/* ============================================
+   ADMIN & REPORT STYLES
+   ============================================ */
+
+/* Admin badge displayed in nav and tables */
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #1c1c1c;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+  margin-left: 0.4rem;
+}
+
+/* Blocked user indicator */
+.blocked-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Active user indicator */
+.active-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+/* Report section in profile page */
+.report-section {
+  border-top: 2px solid rgba(239, 68, 68, 0.3);
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* Admin danger/warning/success button variants */
+.btn-danger {
+  background: #ef4444;
+  color: white;
+  border: none;
+}
+.btn-danger:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+.btn-warning {
+  background: #f59e0b;
+  color: #1c1c1c;
+  border: none;
+}
+.btn-warning:hover {
+  background: #d97706;
+}
+.btn-success {
+  background: #10b981;
+  color: white;
+  border: none;
+}
+.btn-success:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}

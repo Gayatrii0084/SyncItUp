@@ -17,46 +17,56 @@ function getSkillCategory(skill) {
 
 // Load recommendations
 async function loadRecommendations(limit = 10) {
+    const container = document.getElementById('recommendationsContainer');
     try {
         const response = await fetch(`${API_URL}/matching/recommendations`, {
             headers: getAuthHeaders()
         });
-        const data = await response.json();
 
-        const container = document.getElementById('recommendationsContainer');
-        const recommendations = limit ? data.recommendations.slice(0, limit) : data.recommendations;
+        // Clear spinner and handle non-OK responses
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            container.innerHTML = `<p style="text-align: center; color: var(--text-tertiary); padding: 2rem; grid-column: 1 / -1;">${errData.message || 'Failed to load recommendations.'}</p>`;
+            return;
+        }
+
+        const data = await response.json();
+        const recommendations = limit ? (data.recommendations || []).slice(0, limit) : (data.recommendations || []);
 
         if (recommendations.length === 0) {
             container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: 2rem; grid-column: 1 / -1;">No recommendations yet. Update your profile to get matched!</p>';
             return;
         }
 
-        container.innerHTML = recommendations.map(match => `
+        container.innerHTML = recommendations.map(match => {
+        const user = match.user || {};
+        const skills = Array.isArray(user.skills) ? user.skills : [];
+        return `
       <div class="card">
         <div class="flex-between mb-2">
-          <h3 class="card-title">${match.user.name}</h3>
+          <h3 class="card-title">${user.name}</h3>
           <div class="compatibility-badge">${match.score}%</div>
         </div>
         <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
-          ${match.user.college} - ${match.user.year}
+          ${user.college} - ${user.year}
         </p>
         <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">
-          ${match.user.bio || 'No bio provided'}
+          ${user.bio || 'No bio provided'}
         </p>
         
         <div class="mb-2">
           <strong style="font-size: 0.875rem;">Skills:</strong>
           <div class="skill-tags">
-            ${match.user.skills.slice(0, 4).map(skill =>
+            ${skills.slice(0, 4).map(skill =>
             `<span class="skill-tag ${getSkillCategory(skill)}">${skill}</span>`
         ).join('')}
-            ${match.user.skills.length > 4 ? `<span class="skill-tag default">+${match.user.skills.length - 4}</span>` : ''}
+            ${skills.length > 4 ? `<span class="skill-tag default">+${skills.length - 4}</span>` : ''}
           </div>
         </div>
         
         <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 1rem;">
-          <div>${match.user.experienceLevel} • ${match.user.availableHours} hrs/week</div>
-          <div>${match.user.preferredRole}</div>
+          <div>${user.experienceLevel || 'Beginner'} • ${user.availableHours || 0} hrs/week</div>
+          <div>${user.preferredRole || 'Looking for team'}</div>
         </div>
         
         <div class="progress-bar">
@@ -67,11 +77,10 @@ async function loadRecommendations(limit = 10) {
           Send Request
         </button>
       </div>
-    `).join('');
+    `}).join('');
     } catch (error) {
         console.error('Load recommendations error:', error);
-        const container = document.getElementById('recommendationsContainer');
-        container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: 2rem; grid-column: 1 / -1;">Error loading recommendations</p>';
+        container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: 2rem; grid-column: 1 / -1;">Error loading recommendations. Please refresh the page.</p>';
     }
 }
 
@@ -93,7 +102,7 @@ async function sendCollaborationRequest(receiverId) {
         }
     } catch (error) {
         console.error('Send request error:', error);
-        alert('Failed to send request');
+        alert('Failed to send request. Please try again.');
     }
 }
 

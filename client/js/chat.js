@@ -2,7 +2,7 @@
 
 let socket;
 let currentTeam = null;
-let currentUser = JSON.parse(localStorage.getItem('user'));
+let currentUser = null;
 let typingTimeout;
 
 // Initialize socket connection
@@ -32,32 +32,41 @@ function initSocket() {
 
 // Load teams
 async function loadTeams() {
+    const container = document.getElementById('teamsListContainer');
+    if (!container) return;
+
     try {
         const response = await fetch(`${API_URL}/team/my-teams`, {
             headers: getAuthHeaders()
         });
+
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            container.innerHTML = `<p style="text-align: center; color: var(--text-tertiary); padding: 2rem; font-size: 0.875rem;">${errData.message || 'Failed to load teams.'}</p>`;
+            return;
+        }
+
         const data = await response.json();
 
-        const container = document.getElementById('teamsListContainer');
-
-        if (data.teams.length === 0) {
+        if (!data.teams || data.teams.length === 0) {
             container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: 2rem; font-size: 0.875rem;">No teams yet. Connect with teammates!</p>';
             return;
         }
 
         container.innerHTML = data.teams.map(team => {
-            const otherMembers = team.members.filter(m => m._id !== currentUser.id);
-            const teamName = otherMembers.map(m => m.name.split(' ')[0]).join(', ');
+            const otherMembers = (team.members || []).filter(m => m._id !== currentUser.id);
+            const teamName = otherMembers.map(m => (m.name || '').split(' ')[0]).join(', ') || 'Team Room';
 
             return `
-        <div class="card mb-2" style="cursor: pointer; padding: 1rem;" onclick="selectTeam('${team._id}', '${teamName}', ${JSON.stringify(team.members).replace(/"/g, '&quot;')})">
+        <div class="card mb-2" style="cursor: pointer; padding: 1rem;" onclick="selectTeam('${team._id}', '${teamName}', ${JSON.stringify(team.members || []).replace(/"/g, '&quot;')})">
           <h4 style="margin-bottom: 0.25rem; font-size: 1rem;">${teamName}</h4>
-          <p style="font-size: 0.75rem; color: var(--text-tertiary); margin: 0;">${team.members.length} members</p>
+          <p style="font-size: 0.75rem; color: var(--text-tertiary); margin: 0;">${(team.members || []).length} members</p>
         </div>
       `;
         }).join('');
     } catch (error) {
         console.error('Load teams error:', error);
+        container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: 2rem; font-size: 0.875rem;">Error loading teams. Please refresh.</p>';
     }
 }
 
@@ -170,5 +179,20 @@ window.handleKeyPress = handleKeyPress;
 window.handleTyping = handleTyping;
 
 // Initialize on load
-initSocket();
-loadTeams();
+document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    if (!currentUser || !currentUser.id) {
+        // Force re-login if user object is missing
+        window.location.href = 'login.html';
+        return;
+    }
+
+    initSocket();
+    loadTeams();
+});

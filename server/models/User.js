@@ -60,6 +60,15 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false
     }
 });
 

@@ -7,46 +7,219 @@
     <title>Login - SyncItUp</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ── OTP Input Styles ── */
+        .otp-section {
+            animation: fadeSlideIn 0.35s ease;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .otp-inputs {
+            display: flex;
+            gap: 0.6rem;
+            justify-content: center;
+            margin: 1.25rem 0;
+        }
+
+        .otp-inputs input {
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            border-radius: 10px;
+            border: 2px solid var(--border-color, #2d2d4e);
+            background: var(--card-bg, #1a1a2e);
+            color: var(--text-primary, #e2e8f0);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            caret-color: transparent;
+        }
+
+        .otp-inputs input:focus {
+            outline: none;
+            border-color: var(--primary-color, #a78bfa);
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
+        }
+
+        .otp-inputs input.filled {
+            border-color: var(--primary-color, #a78bfa);
+        }
+
+        .otp-hint {
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-secondary, #94a3b8);
+            margin-bottom: 0.25rem;
+        }
+
+        .otp-timer {
+            text-align: center;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .otp-timer.warning {
+            color: #ef4444;
+        }
+
+        .otp-timer.ok {
+            color: #22c55e;
+        }
+
+        .resend-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color, #a78bfa);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0;
+            text-decoration: underline;
+            display: block;
+            margin: 0 auto 1rem;
+        }
+
+        .resend-btn:disabled {
+            color: var(--text-secondary, #94a3b8);
+            text-decoration: none;
+            cursor: default;
+        }
+
+        /* ── Success badge ── */
+        .otp-email-badge {
+            background: rgba(167, 139, 250, 0.1);
+            border: 1px solid rgba(167, 139, 250, 0.25);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #a78bfa;
+            margin-bottom: 1rem;
+        }
+
+        #errorMessage {
+            white-space: pre-line;
+            padding: 0.75rem 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        #errorMessage.hidden {
+            display: none;
+        }
+
+        #successMessage {
+            padding: 0.75rem 1rem;
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        #successMessage.hidden {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
     <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem;">
         <div class="card" style="max-width: 450px; width: 100%;">
+
+            <!-- Header -->
             <div style="text-align: center; margin-bottom: 2rem;">
                 <div class="nav-logo" style="font-size: 2rem; margin-bottom: 0.5rem;">⚡ SyncItUp</div>
-                <h2 style="margin-bottom: 0.5rem;">Welcome Back!</h2>
-                <p style="color: var(--text-secondary);">Login to find your perfect teammates</p>
+                <h2 id="formTitle" style="margin-bottom: 0.5rem;">Welcome Back!</h2>
+                <p id="formSubtitle" style="color: var(--text-secondary);">Login to find your perfect teammates</p>
             </div>
 
+            <!-- ── Step 1: Login Form ───────────────────────────── -->
             <form id="loginForm">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required placeholder="you@college.edu">
+                    <input type="email" id="email" required placeholder="you@college.edu">
                 </div>
-
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                    <input type="password" id="password" required placeholder="Enter your password">
                 </div>
 
-                <div id="errorMessage" class="hidden"
-                    style="padding: 0.75rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 0.5rem; margin-bottom: 1rem; font-size: 0.875rem;">
-                </div>
+                <div id="errorMessage" class="hidden"></div>
 
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" id="loginBtn">
+                <button type="submit" id="loginBtn" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">
                     Login
                 </button>
+            </form>
 
-                <p style="text-align: center; color: var(--text-secondary);">
+            <!-- ── Step 2: OTP Verification Form (hidden initially) -->
+            <div id="otpSection" class="otp-section" style="display:none;">
+
+                <div class="otp-email-badge" id="otpEmailBadge">
+                    📧 OTP sent to <strong id="otpEmailDisplay"></strong>
+                </div>
+
+                <p class="otp-hint">Enter the 6-digit code from your email</p>
+
+                <!-- 6 individual digit inputs for UX -->
+                <div class="otp-inputs" id="otpInputs">
+                    <input type="text" maxlength="1" inputmode="numeric" id="otp-0" autocomplete="off">
+                    <input type="text" maxlength="1" inputmode="numeric" id="otp-1" autocomplete="off">
+                    <input type="text" maxlength="1" inputmode="numeric" id="otp-2" autocomplete="off">
+                    <input type="text" maxlength="1" inputmode="numeric" id="otp-3" autocomplete="off">
+                    <input type="text" maxlength="1" inputmode="numeric" id="otp-4" autocomplete="off">
+                    <input type="text" maxlength="1" inputmode="numeric" id="otp-5" autocomplete="off">
+                </div>
+
+                <div class="otp-timer ok" id="otpTimer">⏱ 2:00 remaining</div>
+                <div id="errorMessage2" class="hidden"
+                    style="padding:0.75rem 1rem; background:rgba(239,68,68,0.1); color:#ef4444; border-radius:0.5rem; margin-bottom:1rem; font-size:0.875rem; border:1px solid rgba(239,68,68,0.25);">
+                </div>
+                <div id="successMessage" class="hidden"></div>
+
+                <button id="verifyOtpBtn" class="btn btn-primary" style="width: 100%; margin-bottom: 0.75rem;">
+                    Verify OTP
+                </button>
+
+                <button class="resend-btn" id="resendOtpBtn" disabled>
+                    Resend OTP (wait 60s)
+                </button>
+
+                <button id="backToLoginBtn"
+                    style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:0.85rem; display:block; margin:0 auto; padding:0;">
+                    ← Back to Login
+                </button>
+            </div>
+
+            <!-- Footer links (always visible) -->
+            <div id="footerLinks">
+                <p style="text-align: center; color: var(--text-secondary); margin-top: 1rem;">
                     Don't have an account? <a href="signup.html"
                         style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Sign up</a>
                 </p>
-
                 <p
-                    style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); color: var(--text-tertiary); font-size: 0.875rem;">
+                    style="text-align: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); color: var(--text-tertiary); font-size: 0.875rem;">
                     <strong>Demo Account:</strong> priya@example.com / password123
                 </p>
-            </form>
+            </div>
+
         </div>
     </div>
 
